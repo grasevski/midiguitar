@@ -1,11 +1,24 @@
+#include <stdbool.h>
+
 #include "arm_math.h"
 #include "lookup.h"
-#include <stdbool.h>
+
+/// Minimum detectable pitch.
 #define PITCH_MIN ((float)MIN_FFT_INDEX / N_FFT_GRID)
+
+/// Maximum detectable pitch.
 #define PITCH_MAX ((float)MAX_FFT_INDEX / N_FFT_GRID)
+
+/// Number of bits for bends.
 enum { LOG_NUM_BENDS = 13 };
+
+/// Note midpoint.
 enum { PITCH_OFFSET = 1 << LOG_NUM_BENDS };
+
+/// Note bitmask.
 enum { PITCH_MASK = PITCH_OFFSET - 1 };
+
+/// Number of audio samples per second.
 enum { SAMPLE_RATE = 48000 };
 
 /// Updates least squares solution for the given order.
@@ -90,8 +103,7 @@ static void solve(int n, const float t[2 * (n + 1)], const float h[2 * (n - 1)],
   x[0] = f[0] / (t[0] + h[0]);
   for (int k = 1; k < n; ++k) {
     float lambda_k = f[k];
-    for (int i = 0; i < k; ++i)
-      lambda_k -= x[i] * (t[k - i] + h[k + i]);
+    for (int i = 0; i < k; ++i) lambda_k -= x[i] * (t[k - i] + h[k + i]);
     x[k] = 0;
     for (int i = 0; i < k + 1; ++i)
       x[i] += lambda_k * gamma[(k + 1) * k / 2 + i];
@@ -103,18 +115,15 @@ static void th(int n, const float t[2 * (n + 2)], const float h[2 * n],
                float gamma[(n + 1) * (n + 2) / 2]) {
   const float R00 = t[0] + h[0];
   gamma[0] = 1 / R00;
-  if (n == 0)
-    return;
+  if (n == 0) return;
   const float R01 = t[1] + h[1], R11 = t[0] + h[2];
   const float s = 1 / (R00 * R11 - R01 * R01);
   gamma[1] = -s * R01;
   gamma[2] = s * R00;
-  if (n == 1)
-    return;
+  if (n == 1) return;
   float a[n], alpha[n + 1], phi_k[n + 1], psi_k[n + 1];
   a[0] = t[1];
-  for (int i = 1; i < n; ++i)
-    a[i] = t[i + 1] + h[i - 1];
+  for (int i = 1; i < n; ++i) a[i] = t[i + 1] + h[i - 1];
   psi_k[0] = gamma[0];
   phi_k[0] = a[0] / R00;
   alpha[1] = R01 / R00;
@@ -143,8 +152,7 @@ static void th(int n, const float t[2 * (n + 2)], const float h[2 * n],
                 psi_k[k] * phi_k[i] - phi_k[k] * psi_k[i];
       b_k[i + 1] += gamma[K + i];
     }
-    for (int i = 0; i < k + 1; ++i)
-      nu_kp1 += r_kp1[i] * b_k[i];
+    for (int i = 0; i < k + 1; ++i) nu_kp1 += r_kp1[i] * b_k[i];
     nu_kp1 /= gamma[K + k];
     const float gammap = 1 / (nu_kp1 + t[0] + h[2 * k + 2]);
     for (int i = 0; i < k + 1; ++i)
@@ -158,8 +166,7 @@ static void thp(int n, const float t[2 * (n + 2)], const float h[2 * n],
                 float gamma[(n + 1) * (n + 2) / 2]) {
   const float R00 = t[0] + h[0];
   gamma[0] = 1 / R00;
-  if (n == 0)
-    return;
+  if (n == 0) return;
   const float R01 = t[1] + h[1], R11 = t[0] + h[2];
   const float s = 1 / (R00 * R11 - R01 * R01);
   gamma[1] = -s * R01;
@@ -183,8 +190,7 @@ static void thp(int n, const float t[2 * (n + 2)], const float h[2 * n],
       b_k[i] += gamma[K + 1 + i] - gamma[k * (k - 1) / 2 + i];
       b_k[i + 1] += gamma[K + i];
     }
-    for (int i = 0; i < k + 1; ++i)
-      nu_kp1 += r_kp1[i] * b_k[i];
+    for (int i = 0; i < k + 1; ++i) nu_kp1 += r_kp1[i] * b_k[i];
     nu_kp1 /= gamma[K + k];
     const float gammap = 1 / (nu_kp1 + t[0] + h[2 * k + 2]);
     for (int i = 0; i < k + 1; ++i)
@@ -299,8 +305,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
       break;
     }
   }
-  if (!order)
-    arm_max_f32(lnBF, MAX_MODEL_ORDER + 1, &energy, &order);
+  if (!order) arm_max_f32(lnBF, MAX_MODEL_ORDER + 1, &energy, &order);
   return order;
 }
 
@@ -309,8 +314,7 @@ static float fastf0nls(const float x[SAMPLES]) {
   float omega_0h[MAX_MODEL_ORDER];
   compute(x, omega_0h);
   const int order = model_order_selection(omega_0h, x);
-  if (order < 1)
-    return -1;
+  if (order < 1) return -1;
   const float res = 2 * M_PI / N_FFT_GRID;
   const float omega = omega_0h[order - 1];
   float omega_l = omega - res, omega_u = omega + res;
@@ -335,53 +339,42 @@ static float fastf0nls(const float x[SAMPLES]) {
       fa = -compute_obj(omega_a, x, order, ac, as);
     }
   }
-  if (fa > fb)
-    return 0.5 * (omega_b + omega_u);
-  if (fa < fb)
-    return 0.5 * (omega_l + omega_a);
+  if (fa > fb) return 0.5 * (omega_b + omega_u);
+  if (fa < fb) return 0.5 * (omega_l + omega_a);
   return 0.5 * (omega_a + omega_b);
 }
 
 uint8_t midiguitar(struct midiguitar *midiguitar,
-                   const volatile uint16_t input[AUDIO_CAP], uint16_t k,
-                   uint8_t output[MIDI_CAP]) {
+                   const uint16_t input[AUDIO_CAP], uint8_t output[MIDI_CAP]) {
   enum { Q = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
   enum { P = SAMPLES - Q };
   enum { SAMPLE_DIVISOR = 1 << LOG_SAMPLE_DIVISOR };
-  if (k != AUDIO_CAP)
-    k = AUDIO_CAP - k;
-  while (midiguitar->len + SAMPLE_DIVISOR - 1 < k) {
-    if (!midiguitar->len)
-      memmove(midiguitar->input, midiguitar->input + Q, P * sizeof(float));
-    int32_t x = 0;
-    for (int8_t i = 0; i < SAMPLE_DIVISOR; ++i)
-      x += input[midiguitar->len + i] - OFFSET;
-    x >>= LOG_SAMPLE_DIVISOR;
-    midiguitar->input[P + (midiguitar->len >> LOG_SAMPLE_DIVISOR)] =
-        (float)x / OFFSET;
-    midiguitar->arv += x < 0 ? -x : x;
-    midiguitar->len += SAMPLE_DIVISOR;
-  }
-  if (midiguitar->len < AUDIO_CAP)
-    return 0;
-  midiguitar->arv /= AUDIO_CAP << (LOG_OFFSET - 8);
+  memmove(midiguitar->input, midiguitar->input + Q, P * sizeof(float));
+  bzero(midiguitar->input + P, Q * sizeof(float));
+  for (uint16_t i = 0; i < AUDIO_CAP; ++i)
+    midiguitar->input[P + (i >> 1)] +=
+        (float)(input[i] - OFFSET) / (OFFSET << LOG_SAMPLE_DIVISOR);
+  float a = 0;
+  for (uint16_t i = 0; i < SAMPLES; ++i) a += fabsf(midiguitar->input[i]);
+  const uint8_t arv = fmaxf(128 * a / SAMPLES, 127);
   const float f = (SAMPLE_RATE >> LOG_SAMPLE_DIVISOR) *
                   fastf0nls(midiguitar->input) / (2 * M_PI);
-  const uint32_t n =
-      f <= 0 || f > 13289.75 ? 0 : PITCH_OFFSET * (69 + 12 * log2f(f / 440));
+  const uint32_t n = f <= 0 || f > 13289.75
+                         ? 0
+                         : PITCH_OFFSET * (69 + 12 * log2f(f / 440)) + 0.5;
   const uint8_t note = n >> LOG_NUM_BENDS;
   const uint16_t bend = PITCH_OFFSET + (n & PITCH_MASK);
   uint8_t r = 0;
   if (midiguitar->note && midiguitar->note != note) {
     output[0] = 0x80;
     output[1] = midiguitar->note;
-    output[2] = midiguitar->arv;
+    output[2] = arv;
     r = 3;
   }
   if (note && midiguitar->note != note) {
     output[r] = 0x90;
     output[r + 1] = note;
-    output[r + 2] = midiguitar->arv;
+    output[r + 2] = arv;
     r += 3;
   }
   if (note && midiguitar->bend != bend) {
@@ -390,9 +383,7 @@ uint8_t midiguitar(struct midiguitar *midiguitar,
     output[r + 2] = bend >> 8;
     r += 3;
   }
-  midiguitar->len = 0;
   midiguitar->note = note;
   midiguitar->bend = bend;
-  midiguitar->arv = 0;
   return r;
 }

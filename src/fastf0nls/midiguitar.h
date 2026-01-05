@@ -1,25 +1,52 @@
+/// Pitch tracker.
 #pragma once
 #include <stdint.h>
-#define FFT_INIT arm_rfft_fast_init_512_f32
-enum { N_FFT_GRID = 512 };
+
+/// FFT static dispatch based on size.
+#define FFT_INIT arm_rfft_fast_init_4096_f32
+
+/// FFT size.
+enum { N_FFT_GRID = 4096 };
+
+/// Downsampling factor.
 enum { LOG_SAMPLE_DIVISOR = 1 };
-enum { SAMPLES = 600 >> LOG_SAMPLE_DIVISOR };
-enum { AUDIO_CAP = SAMPLES << LOG_SAMPLE_DIVISOR };
+
+/// Sample chunk size.
+enum { AUDIO_CAP = 600 };
+
+/// Number of samples after downsampling.
+enum { SAMPLES = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
+
+/// Midi TX buffer size.
 enum { MIDI_CAP = 16 };
-enum { MAX_MODEL_ORDER = 16 };
+
+/// Max number of harmonics.
+enum { MAX_MODEL_ORDER = 2 };
+
+/// Midpoint.
 enum { MP = (N_FFT_GRID >> 1) + 1 };
+
+/// FFT bounds.
 enum { MIN_FFT_INDEX = 1, MAX_FFT_INDEX = N_FFT_GRID >> 1 };
+
+/// Logarithm of ADC midpoint.
 enum { LOG_OFFSET = 15 };
+
+/// ADC midpoint.
 enum { OFFSET = 1 << LOG_OFFSET };
 
+/// Pitch tracking state.
 struct midiguitar {
+  /// Most recent note.
   uint8_t note;
-  uint16_t len, bend;
-  uint32_t arv;
+
+  /// Bend for most recent note.
+  uint16_t bend;
+
+  /// Samples from previous calls, in case of overlap.
   float input[SAMPLES];
 };
 
 /// Converts audio to midi.
 uint8_t midiguitar(struct midiguitar *midiguitar,
-                   const volatile uint16_t input[AUDIO_CAP], uint16_t k,
-                   uint8_t output[MIDI_CAP]);
+                   const uint16_t input[AUDIO_CAP], uint8_t output[MIDI_CAP]);

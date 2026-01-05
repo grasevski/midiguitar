@@ -1,7 +1,8 @@
-#include "midiguitar.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "midiguitar.h"
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 /// Intermediate variables used to calculate gamma.
@@ -189,16 +190,16 @@ int main() {
   for (uint16_t i = 0; i < MP; ++i) {
     const float v = (M_PI * (SAMPLES - 1.0) / N_FFT_GRID) * i;
     printf("%f, %f,", cosf(v), sinf(v));
-    if (i + 1 < MP)
-      printf(" ");
+    if (i + 1 < MP) printf(" ");
   }
   static float ccVectors[(MAX_MODEL_ORDER + 1) << 1][N_FFT_GRID];
+  uint16_t ccVectorsLen[(MAX_MODEL_ORDER + 1) << 1];
   uint16_t maxFftIndex = MAX_FFT_INDEX;
   uint16_t nPitches = maxFftIndex - MIN_FFT_INDEX + 1;
   for (uint16_t i = 0; i < nPitches; ++i) {
     ccVectors[0][i] = 0.5 * SAMPLES;
   }
-  ccVectors[0][nPitches] = nanf("1");
+  ccVectorsLen[0] = nPitches;
   for (uint8_t k = 1; k < (MAX_MODEL_ORDER + 1) << 1; ++k) {
     if (k % 2) {
       const uint16_t maxFftIndexOld = maxFftIndex;
@@ -209,7 +210,7 @@ int main() {
       const float t = M_PI * k * (i + MIN_FFT_INDEX) / N_FFT_GRID;
       ccVectors[k][i] = 0.5 * sinf(t * SAMPLES) / sinf(t);
     }
-    ccVectors[k][nPitches] = nanf("1");
+    ccVectorsLen[k] = nPitches;
   }
   maxFftIndex = MAX_FFT_INDEX;
   nPitches = maxFftIndex - MIN_FFT_INDEX + 1;
@@ -234,8 +235,7 @@ int main() {
     printf("  ");
     for (uint16_t i = 0; i < MP; ++i) {
       printf("%f,", gamma1[order * MP + i]);
-      if (i + 1 < MP)
-        printf(" ");
+      if (i + 1 < MP) printf(" ");
     }
     printf("\n");
   }
@@ -244,18 +244,16 @@ int main() {
     printf("  ");
     for (uint16_t i = 0; i < MP; ++i) {
       printf("%f,", gamma2[order * MP + i]);
-      if (i + 1 < MP)
-        printf(" ");
+      if (i + 1 < MP) printf(" ");
     }
     printf("\n");
   }
   printf("};\n\nconst float *CC_VECTORS[(MAX_MODEL_ORDER + 1) << 1] = {\n");
   for (uint8_t i = 0; i < (MAX_MODEL_ORDER + 1) << 1; ++i) {
     printf("  (const float[]){");
-    for (uint16_t j = 0; !isnan(ccVectors[i][j]); ++j) {
+    for (uint16_t j = 0; j < ccVectorsLen[i]; ++j) {
       printf("%f", ccVectors[i][j]);
-      if (!isnan(ccVectors[i][j + 1]))
-        printf(", ");
+      if (j + 1 < ccVectorsLen[i]) printf(", ");
     }
     printf("},\n");
   }
