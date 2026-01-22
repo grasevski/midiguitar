@@ -491,7 +491,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "../midiguitarpcb.stl",
+      "step": "midiguitarpcb.step",
       "svg": "",
       "vrml": ""
     },
