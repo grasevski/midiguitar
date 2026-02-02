@@ -5654,6 +5654,12 @@
 		(uuid "3f38795f-801d-48fa-9fd8-5a75246a9979")
 	)
 	(junction
+		(at 218.44 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3f3fee93-e09d-44a0-adf2-5a178b2e3482")
+	)
+	(junction
 		(at 104.14 38.1)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5796,12 +5802,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ba8b14e1-412a-42b9-bb47-f2fa254be29e")
-	)
-	(junction
-		(at 205.74 101.6)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bce8d618-ce03-46ce-b651-adb88e28b392")
 	)
 	(junction
 		(at 191.77 101.6)
@@ -6325,7 +6325,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 101.6) (xy 205.74 30.48)
+			(xy 218.44 101.6) (xy 218.44 30.48)
 		)
 		(stroke
 			(width 0)
@@ -6425,16 +6425,6 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 30.48) (xy 205.74 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3208775f-ce41-4866-b4ee-b6f8082e1cfa")
-	)
-	(wire
-		(pts
 			(xy 243.84 22.86) (xy 231.14 22.86)
 		)
 		(stroke
@@ -6455,13 +6445,23 @@
 	)
 	(wire
 		(pts
-			(xy 191.77 101.6) (xy 205.74 101.6)
+			(xy 191.77 101.6) (xy 218.44 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "38461dff-66c8-40b1-b1e5-9a16e6310389")
+	)
+	(wire
+		(pts
+			(xy 205.74 30.48) (xy 218.44 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3861792b-8200-4f7f-8bce-1543a7ccd7f8")
 	)
 	(wire
 		(pts
@@ -6492,16 +6492,6 @@
 			(type default)
 		)
 		(uuid "3aff836d-36e4-4917-922e-aa7922588372")
-	)
-	(wire
-		(pts
-			(xy 205.74 30.48) (xy 218.44 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3cc27cbe-dce9-456e-b5d6-76c9cec7a380")
 	)
 	(wire
 		(pts
@@ -6815,6 +6805,16 @@
 	)
 	(wire
 		(pts
+			(xy 205.74 30.48) (xy 193.04 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e22a315-88fa-4c9e-9152-199db184d9fb")
+	)
+	(wire
+		(pts
 			(xy 77.47 38.1) (xy 77.47 73.66)
 		)
 		(stroke
@@ -6882,6 +6882,16 @@
 			(type default)
 		)
 		(uuid "8b734ff3-6d59-4f74-85a7-fc38b918682e")
+	)
+	(wire
+		(pts
+			(xy 180.34 30.48) (xy 167.64 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d79a5f9-1ebc-4983-83c8-c8f711c3eb10")
 	)
 	(wire
 		(pts
@@ -7212,16 +7222,6 @@
 			(type default)
 		)
 		(uuid "e96b9184-0e99-4466-ab1c-2f777b91add2")
-	)
-	(wire
-		(pts
-			(xy 167.64 30.48) (xy 180.34 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "eb3fb1a6-94d9-4708-a1a1-54346d5e3cf7")
 	)
 	(wire
 		(pts
@@ -7564,7 +7564,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
 			(at 19.05 90.678 90)
 			(effects
 				(font
@@ -7634,7 +7634,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
 			(at 32.258 64.77 90)
 			(effects
 				(font
@@ -7770,7 +7770,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 156.972 90.17 90)
 			(effects
 				(font
@@ -8058,7 +8058,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 124.46 55.372 90)
 			(effects
 				(font
@@ -8127,7 +8127,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 193.548 97.79 90)
 			(effects
 				(font
@@ -8171,7 +8171,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
-		(at 167.64 33.02 180)
+		(at 180.34 33.02 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -8180,7 +8180,7 @@
 		(fields_autoplaced yes)
 		(uuid "2db67f21-76b0-418d-a491-dfdecdeb6ae7")
 		(property "Reference" "H2"
-			(at 170.18 33.0199 0)
+			(at 182.88 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8189,7 +8189,7 @@
 			)
 		)
 		(property "Value" "MountingHole_Pad"
-			(at 170.18 35.5599 0)
+			(at 182.88 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8198,7 +8198,7 @@
 			)
 		)
 		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad"
-			(at 167.64 33.02 0)
+			(at 180.34 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8207,7 +8207,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 167.64 33.02 0)
+			(at 180.34 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8216,7 +8216,7 @@
 			)
 		)
 		(property "Description" "Mounting Hole with connection"
-			(at 167.64 33.02 0)
+			(at 180.34 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8331,7 +8331,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
 			(at 158.75 97.79 0)
 			(effects
 				(font
@@ -8410,7 +8410,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 30.1752 100.33 0)
 			(effects
 				(font
@@ -8480,7 +8480,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 121.6152 64.77 0)
 			(effects
 				(font
@@ -8550,7 +8550,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 194.0052 30.48 0)
 			(effects
 				(font
@@ -8620,7 +8620,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 244.8052 30.48 0)
 			(effects
 				(font
@@ -8688,7 +8688,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 16.51 56.642 90)
 			(effects
 				(font
@@ -9121,7 +9121,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 181.3052 30.48 0)
 			(effects
 				(font
@@ -9349,7 +9349,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 60.6552 138.43 0)
 			(effects
 				(font
@@ -9393,7 +9393,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 205.74 101.6 0)
+		(at 218.44 101.6 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9402,7 +9402,7 @@
 		(fields_autoplaced yes)
 		(uuid "60ff00bb-5794-400c-b591-fc23039e0b22")
 		(property "Reference" "#PWR012"
-			(at 205.74 107.95 0)
+			(at 218.44 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9411,7 +9411,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 205.74 106.68 0)
+			(at 218.44 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9419,7 +9419,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 205.74 101.6 0)
+			(at 218.44 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9428,7 +9428,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 205.74 101.6 0)
+			(at 218.44 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9437,7 +9437,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 205.74 101.6 0)
+			(at 218.44 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9485,7 +9485,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 93.472 60.96 90)
 			(effects
 				(font
@@ -9555,7 +9555,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 168.6052 30.48 0)
 			(effects
 				(font
@@ -9691,7 +9691,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 73.3552 138.43 0)
 			(effects
 				(font
@@ -9828,7 +9828,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 17.4752 100.33 0)
 			(effects
 				(font
@@ -9964,7 +9964,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 159.7152 127 0)
 			(effects
 				(font
@@ -10034,7 +10034,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 155.9052 30.48 0)
 			(effects
 				(font
@@ -10078,7 +10078,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
-		(at 180.34 33.02 180)
+		(at 205.74 33.02 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -10087,7 +10087,7 @@
 		(fields_autoplaced yes)
 		(uuid "8313a90f-ddb5-4595-a38a-fb67d3a22c06")
 		(property "Reference" "H3"
-			(at 182.88 33.0199 0)
+			(at 208.28 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10096,7 +10096,7 @@
 			)
 		)
 		(property "Value" "MountingHole_Pad"
-			(at 182.88 35.5599 0)
+			(at 208.28 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10105,7 +10105,7 @@
 			)
 		)
 		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad"
-			(at 180.34 33.02 0)
+			(at 205.74 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10114,7 +10114,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 180.34 33.02 0)
+			(at 205.74 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10123,7 +10123,7 @@
 			)
 		)
 		(property "Description" "Mounting Hole with connection"
-			(at 180.34 33.02 0)
+			(at 205.74 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10171,7 +10171,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 172.4152 127 0)
 			(effects
 				(font
@@ -10310,7 +10310,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 68.58 70.358 90)
 			(effects
 				(font
@@ -10380,7 +10380,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 108.9152 64.77 0)
 			(effects
 				(font
@@ -10714,7 +10714,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 93.472 53.34 90)
 			(effects
 				(font
@@ -10784,7 +10784,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 117.8052 30.48 0)
 			(effects
 				(font
@@ -10854,7 +10854,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 219.4052 30.48 0)
 			(effects
 				(font
@@ -10922,7 +10922,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 138.43 97.4852 0)
 			(effects
 				(font
@@ -10992,7 +10992,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 105.1052 30.48 0)
 			(effects
 				(font
@@ -11128,7 +11128,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 206.7052 30.48 0)
 			(effects
 				(font
@@ -11287,7 +11287,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 154.432 90.17 90)
 			(effects
 				(font
@@ -11423,7 +11423,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
 			(at 156.21 97.79 0)
 			(effects
 				(font
@@ -11502,7 +11502,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 90.932 34.29 90)
 			(effects
 				(font
@@ -11572,7 +11572,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 232.1052 30.48 0)
 			(effects
 				(font
@@ -11616,7 +11616,7 @@
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
-		(at 193.04 33.02 180)
+		(at 231.14 33.02 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -11625,7 +11625,7 @@
 		(fields_autoplaced yes)
 		(uuid "d3f071d5-0a9c-4c51-b5ba-03e91059e0c7")
 		(property "Reference" "H4"
-			(at 195.58 33.0199 0)
+			(at 233.68 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11634,7 +11634,7 @@
 			)
 		)
 		(property "Value" "MountingHole_Pad"
-			(at 195.58 35.5599 0)
+			(at 233.68 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11643,7 +11643,7 @@
 			)
 		)
 		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad"
-			(at 193.04 33.02 0)
+			(at 231.14 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11652,7 +11652,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 193.04 33.02 0)
+			(at 231.14 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11661,7 +11661,7 @@
 			)
 		)
 		(property "Description" "Mounting Hole with connection"
-			(at 193.04 33.02 0)
+			(at 231.14 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11775,7 +11775,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 78.232 34.29 90)
 			(effects
 				(font
@@ -11843,7 +11843,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
 			(at 24.13 60.198 90)
 			(effects
 				(font
@@ -11979,7 +11979,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 141.9352 30.48 0)
 			(effects
 				(font
@@ -12047,7 +12047,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 148.59 60.6552 0)
 			(effects
 				(font
@@ -12183,7 +12183,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 41.402 125.73 90)
 			(effects
 				(font
@@ -12253,7 +12253,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 29.5148 121.92 0)
 			(effects
 				(font
