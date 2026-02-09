@@ -113,7 +113,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_OPAMP_Start(&hopamp1);
   __attribute__((section(".dma"))) static uint16_t input[2][AUDIO_CAP];
-  __attribute__((section(".dma"))) static uint8_t output[MIDI_CAP], telemetry[64];
+  __attribute__((section(".dma"))) static uint8_t telemetry[64];
+  __attribute__((section(".bdma"))) static uint8_t output[MIDI_CAP];
   bzero(input, sizeof(input));
   bzero(output, sizeof(output));
   bzero(telemetry, sizeof(telemetry));
@@ -248,8 +249,8 @@ static void MX_ADC1_Init(void)
   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = ENABLE;
-  hadc1.Init.Oversampling.Ratio = 2;
-  hadc1.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_NONE;
+  hadc1.Init.Oversampling.Ratio = 32;
+  hadc1.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_5;
   hadc1.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
   hadc1.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -269,7 +270,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_16CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
