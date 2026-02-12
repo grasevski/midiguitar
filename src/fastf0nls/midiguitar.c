@@ -356,7 +356,7 @@ uint8_t midiguitar(struct midiguitar *midiguitar,
         (float)(input[i] - OFFSET) / (OFFSET << LOG_SAMPLE_DIVISOR);
   float a = 0;
   for (uint16_t i = 0; i < SAMPLES; ++i) a += fabsf(midiguitar->input[i]);
-  const uint8_t arv = fmaxf(128 * a / SAMPLES, 127);
+  const uint8_t arv = fminf(128 * a / SAMPLES, 127);
   const float f = (SAMPLE_RATE >> LOG_SAMPLE_DIVISOR) *
                   fastf0nls(midiguitar->input) / (2 * M_PI);
   const uint32_t n = f <= 0 || f > 13289.75
@@ -379,8 +379,8 @@ uint8_t midiguitar(struct midiguitar *midiguitar,
   }
   if (note && midiguitar->bend != bend) {
     output[r] = 0xe0;
-    output[r + 1] = bend & 0xff;
-    output[r + 2] = bend >> 8;
+    output[r + 1] = bend & 0x7f;
+    output[r + 2] = (bend >> 7) & 0x7f;
     r += 3;
   }
   midiguitar->note = note;
