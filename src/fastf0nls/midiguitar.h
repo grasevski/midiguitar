@@ -3,16 +3,16 @@
 #include <stdint.h>
 
 /// FFT static dispatch based on size.
-#define FFT_INIT arm_rfft_fast_init_4096_f32
+#define FFT_INIT arm_rfft_fast_init_2048_f32
 
 /// FFT size.
-enum { N_FFT_GRID = 4096 };
+enum { N_FFT_GRID = 2048 };
 
 /// Downsampling factor.
 enum { LOG_SAMPLE_DIVISOR = 1 };
 
 /// Sample chunk size.
-enum { AUDIO_CAP = 600 };
+enum { AUDIO_CAP = 1200 };
 
 /// Number of samples after downsampling.
 enum { SAMPLES = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
@@ -21,7 +21,7 @@ enum { SAMPLES = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
 enum { MIDI_CAP = 16 };
 
 /// Max number of harmonics.
-enum { MAX_MODEL_ORDER = 2 };
+enum { MAX_MODEL_ORDER = 4 };
 
 /// Midpoint.
 enum { MP = (N_FFT_GRID >> 1) + 1 };

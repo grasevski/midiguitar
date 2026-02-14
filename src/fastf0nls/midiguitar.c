@@ -9,18 +9,6 @@
 /// Maximum detectable pitch.
 #define PITCH_MAX ((float)MAX_FFT_INDEX / N_FFT_GRID)
 
-/// Number of bits for bends.
-enum { LOG_NUM_BENDS = 13 };
-
-/// Note midpoint.
-enum { PITCH_OFFSET = 1 << LOG_NUM_BENDS };
-
-/// Note bitmask.
-enum { PITCH_MASK = PITCH_OFFSET - 1 };
-
-/// Number of audio samples per second.
-enum { SAMPLE_RATE = 48000 };
-
 /// Updates least squares solution for the given order.
 static void update_ls_sol(int order, int nPitches, int nPitchesOld, bool add,
                           const float dftData[],
@@ -346,24 +334,25 @@ static float fastf0nls(const float x[SAMPLES]) {
 
 uint8_t midiguitar(struct midiguitar *midiguitar,
                    const uint16_t input[AUDIO_CAP], uint8_t output[MIDI_CAP]) {
+  enum { LOG_NUM_BENDS = 12 };
+  enum { NUM_BENDS = 1 << LOG_NUM_BENDS };
   enum { Q = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
   enum { P = SAMPLES - Q };
-  enum { SAMPLE_DIVISOR = 1 << LOG_SAMPLE_DIVISOR };
   memmove(midiguitar->input, midiguitar->input + Q, P * sizeof(float));
   bzero(midiguitar->input + P, Q * sizeof(float));
   for (uint16_t i = 0; i < AUDIO_CAP; ++i)
     midiguitar->input[P + (i >> 1)] +=
         (float)(input[i] - OFFSET) / (OFFSET << LOG_SAMPLE_DIVISOR);
-  float a = 0;
-  for (uint16_t i = 0; i < SAMPLES; ++i) a += fabsf(midiguitar->input[i]);
-  const uint8_t arv = fminf(128 * a / SAMPLES, 127);
-  const float f = (SAMPLE_RATE >> LOG_SAMPLE_DIVISOR) *
-                  fastf0nls(midiguitar->input) / (2 * M_PI);
-  const uint32_t n = f <= 0 || f > 13289.75
-                         ? 0
-                         : PITCH_OFFSET * (69 + 12 * log2f(f / 440)) + 0.5;
+  float a;
+  arm_rms_f32(midiguitar->input, SAMPLES, &a);
+  const uint8_t arv = fminf(128 * a, 127);
+  const float f =
+      (48000 >> LOG_SAMPLE_DIVISOR) * fastf0nls(midiguitar->input) / (2 * M_PI);
+  const uint32_t n =
+      f <= 0 || f > 13289.75 ? 0 : NUM_BENDS * (69 + 12 * log2f(f / 440) + 0.5);
   const uint8_t note = n >> LOG_NUM_BENDS;
-  const uint16_t bend = PITCH_OFFSET + (n & PITCH_MASK);
+  const uint16_t bend =
+      (n & (NUM_BENDS - 1)) + (NUM_BENDS << 1) - (NUM_BENDS >> 1);
   uint8_t r = 0;
   if (midiguitar->note && midiguitar->note != note) {
     output[0] = 0x80;
