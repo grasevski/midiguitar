@@ -3,10 +3,10 @@
 #include <stdint.h>
 
 /// FFT static dispatch based on size.
-#define FFT_INIT arm_rfft_fast_init_2048_f32
+#define FFT_INIT arm_rfft_fast_init_1024_f32
 
 /// FFT size.
-enum { N_FFT_GRID = 2048 };
+enum { N_FFT_GRID = 1024 };
 
 /// Downsampling factor.
 enum { LOG_SAMPLE_DIVISOR = 1 };
