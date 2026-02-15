@@ -343,9 +343,9 @@ uint8_t midiguitar(struct midiguitar *midiguitar,
   for (uint16_t i = 0; i < AUDIO_CAP; ++i)
     midiguitar->input[P + (i >> 1)] +=
         (float)(input[i] - OFFSET) / (OFFSET << LOG_SAMPLE_DIVISOR);
-  float a;
-  arm_rms_f32(midiguitar->input, SAMPLES, &a);
-  const uint8_t arv = fminf(128 * a, 127);
+  float rms;
+  arm_rms_f32(midiguitar->input, SAMPLES, &rms);
+  const uint8_t velocity = fminf(128 * rms, 127);
   const float f =
       (48000 >> LOG_SAMPLE_DIVISOR) * fastf0nls(midiguitar->input) / (2 * M_PI);
   const uint32_t n =
@@ -357,13 +357,13 @@ uint8_t midiguitar(struct midiguitar *midiguitar,
   if (midiguitar->note && midiguitar->note != note) {
     output[0] = 0x80;
     output[1] = midiguitar->note;
-    output[2] = arv;
+    output[2] = velocity;
     r = 3;
   }
   if (note && midiguitar->note != note) {
     output[r] = 0x90;
     output[r + 1] = note;
-    output[r + 2] = arv;
+    output[r + 2] = velocity;
     r += 3;
   }
   if (note && midiguitar->bend != bend) {
