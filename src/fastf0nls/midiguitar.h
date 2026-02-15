@@ -9,10 +9,10 @@
 enum { N_FFT_GRID = 1024 };
 
 /// Downsampling factor.
-enum { LOG_SAMPLE_DIVISOR = 1 };
+enum { LOG_SAMPLE_DIVISOR = 0 };
 
 /// Sample chunk size.
-enum { AUDIO_CAP = 1200 };
+enum { AUDIO_CAP = 1024 };
 
 /// Number of samples after downsampling.
 enum { SAMPLES = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
@@ -21,7 +21,7 @@ enum { SAMPLES = AUDIO_CAP >> LOG_SAMPLE_DIVISOR };
 enum { MIDI_CAP = 16 };
 
 /// Max number of harmonics.
-enum { MAX_MODEL_ORDER = 4 };
+enum { MAX_MODEL_ORDER = 3 };
 
 /// Midpoint.
 enum { MP = (N_FFT_GRID >> 1) + 1 };
