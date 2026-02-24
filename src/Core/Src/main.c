@@ -112,40 +112,32 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   HAL_OPAMP_Start(&hopamp1);
-  __attribute__((section(".dma"))) static uint16_t input[2][AUDIO_CAP];
-  __attribute__((section(".dma"))) static uint8_t telemetry[64];
-  __attribute__((section(".bdma"))) static uint8_t output[MIDI_CAP];
-  bzero(input, sizeof(input));
-  bzero(output, sizeof(output));
-  bzero(telemetry, sizeof(telemetry));
-  uint8_t buf[MIDI_CAP] = {};
+  __attribute__((section(".dma"))) static uint16_t inbuf[N_FFT_GRID << 1];
+  bzero(inbuf, sizeof(inbuf));
   struct midiguitar mg = {};
-  int n1 = 0, n2 = 0;
-  uint32_t t0 = 0, t1 = 0, t2 = 0, t3 = 0, t4 = 0;
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)input, AUDIO_CAP << 1);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)inbuf, N_FFT_GRID << 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
-    const int8_t l = sprintf((char *)telemetry, "%d %d %d %d %d %d %d\r\n", n1, n2, (int)(t1 - t0), (int)(t2 - t1), (int)(t3 - t2), (int)(t4 - t3), (int)input[0][0]);
-    t0 = HAL_GetTick();
-    while (__HAL_DMA_GET_COUNTER(hadc1.DMA_Handle) >= AUDIO_CAP);
-    t1 = HAL_GetTick();
-    HAL_UART_Transmit_DMA(&hlpuart1, output, n2);
+    const uint16_t k = __HAL_DMA_GET_COUNTER(hadc1.DMA_Handle);
+    float input[N_FFT_GRID];
+    for (uint16_t i = 0; i < N_FFT_GRID; ++i)
+      input[i] = (inbuf[((N_FFT_GRID << 1) - k + i + N_FFT_GRID) & ((N_FFT_GRID << 1) - 1)] / 32768.0) - 1.0;
+    __attribute__((section(".bdma"))) static uint8_t output[MIDI_CAP];
+    const int t0 = HAL_GetTick();
+    const int n = midiguitar(&mg, input, output);
+    const int t1 = HAL_GetTick();
+    if (!n) continue;
+    while (HAL_UART_GetState(&hlpuart1) != HAL_UART_STATE_READY);
+    HAL_UART_Transmit_DMA(&hlpuart1, output, n);
+    __attribute__((section(".dma"))) static uint8_t telemetry[64];
+    const int8_t l = sprintf((char *)telemetry, "%d %d %d\r\n", n, t1 - t0, (int)inbuf[0]);
     CDC_Transmit_FS(telemetry, l);
-    n1 = midiguitar(&mg, input[0], buf);
-    memcpy(output, buf, sizeof(output));
-    t2 = HAL_GetTick();
-    while (__HAL_DMA_GET_COUNTER(hadc1.DMA_Handle) < AUDIO_CAP);
-    t3 = HAL_GetTick();
-    HAL_UART_Transmit_DMA(&hlpuart1, output, n1);
-    n2 = midiguitar(&mg, input[1], buf);
-    memcpy(output, buf, sizeof(output));
-    t4 = HAL_GetTick();
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

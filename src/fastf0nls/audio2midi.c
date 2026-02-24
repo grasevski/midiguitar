@@ -4,9 +4,9 @@
 
 #include "midiguitar.h"
 
-/// Converts the signed pcm value to a uint16_t.
-static void parse(uint16_t input[AUDIO_CAP]) {
-  for (uint16_t i = 0; i < AUDIO_CAP; ++i) input[i] += OFFSET;
+/// Converts the signed pcm value to a float.
+static void parse(const int16_t inbuf[N_FFT_GRID], float input[N_FFT_GRID]) {
+  for (uint16_t i = 0; i < N_FFT_GRID; ++i) input[i] = inbuf[i] / 32768.0;
 }
 
 /// Writes midi to the given buffer along with a timestamp.
@@ -45,12 +45,13 @@ int main() {
   int16_t n;
   int32_t k = 0, len = 0, dt = 0;
   uint8_t output[MIDI_CAP];
-  uint16_t input[AUDIO_CAP];
+  int16_t inbuf[N_FFT_GRID];
+  float input[N_FFT_GRID];
   for (;;) {
-    n = read(0, (uint8_t *)input + k, sizeof(input) - k);
+    n = read(0, (uint8_t *)inbuf + k, sizeof(inbuf) - k);
     if (n <= 0) {
-      if (k < sizeof(input)) break;
-      parse(input);
+      if (k < sizeof(inbuf)) break;
+      parse(inbuf, input);
       n = midiguitar(&mg, input, output);
       n = audio2midi(buf + len, sizeof(buf) - len, dt, output, n);
       if (n < 0)
@@ -63,8 +64,8 @@ int main() {
       break;
     }
     k += n;
-    if (k < sizeof(input)) continue;
-    parse(input);
+    if (k < sizeof(inbuf)) continue;
+    parse(inbuf, input);
     n = midiguitar(&mg, input, output);
     n = audio2midi(buf + len, sizeof(buf) - len, dt, output, n);
     if (n < 0)
