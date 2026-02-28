@@ -263,7 +263,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
     lngh = logf(lngh + beta_tau) - logf(-2 * alpha_tau);
     const float gh = expf(lngh);
     const float eS = gh / (1 + gh);
-    if (fabsf(1 - eS) > 1e-14) {
+    if (fabs(1 - eS) > 1e-14) {
       const float t = 1 + gh * (1 - R2), t2 = 1 + gh;
       const float lngamma =
           -logf(gh * u * (1 - R2) / (t * t)) - gh * w / (t2 * t2);
@@ -273,7 +273,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
         ms += ac[ell - 1] * ac[ell - 1] * ell * ell +
               as[ell - 1] * as[ell - 1] * ell * ell;
       const float lnH =
-          logf(fabsf(-gh * N_FFT_GRID * (N_FFT_GRID * N_FFT_GRID - 1) /
+          logf(fabs(-gh * N_FFT_GRID * (N_FFT_GRID * N_FFT_GRID - 1) /
                     (r * r * 6 * (1 + gh) * sigma2))) +
           logf(ms);
       const float lnBFg =
@@ -299,12 +299,31 @@ static float fastf0nls(const float x[N_FFT_GRID]) {
   if (order < 1) return -1;
   const float res = 2 * M_PI / N_FFT_GRID;
   const float omega = omega_0h[order - 1];
-  float ac[order], as[order];
-  const float fl = compute_obj(omega - res, x, order, ac, as);
-  const float f0 = compute_obj(omega, x, order, ac, as);
-  const float fr = compute_obj(omega + res, x, order, ac, as);
-  const float denom = fl - 2 * f0 + fr;
-  return fabsf(denom) < 1e-12 ? omega : omega + 0.5 * res * (fl - fr) / denom;
+  float omega_l = omega - res, omega_u = omega + res;
+  const float K = 1.618033988749895;
+  float Ik = (omega_u - omega_l) / K;
+  float omega_a = omega_u - Ik, omega_b = omega_l + Ik, ac[order], as[order];
+  float fa = -compute_obj(omega_a, x, order, ac, as);
+  float fb = -compute_obj(omega_b, x, order, ac, as);
+  while (Ik > 1e-4 || omega_u < omega_l) {
+    Ik /= K;
+    if (fa >= fb) {
+      omega_l = omega_a;
+      omega_a = omega_b;
+      omega_b = omega_l + Ik;
+      fa = fb;
+      fb = -compute_obj(omega_b, x, order, ac, as);
+    } else {
+      omega_u = omega_b;
+      omega_b = omega_a;
+      omega_a = omega_u - Ik;
+      fb = fa;
+      fa = -compute_obj(omega_a, x, order, ac, as);
+    }
+  }
+  if (fa > fb) return 0.5 * (omega_b + omega_u);
+  if (fa < fb) return 0.5 * (omega_l + omega_a);
+  return 0.5 * (omega_a + omega_b);
 }
 
 uint8_t midiguitar(struct midiguitar *midiguitar, const float input[N_FFT_GRID],
