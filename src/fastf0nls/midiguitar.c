@@ -159,7 +159,7 @@ static void thp(int n, const float t[2 * (n + 2)], const float h[2 * n],
   const float s = 1 / (R00 * R11 - R01 * R01);
   gamma[1] = -s * R01;
   gamma[2] = s * R00;
-  return;
+  if (n == 1) return;
   float alpha[n + 1];
   alpha[1] = R01 / R00;
   int Kp1 = 1;
@@ -263,7 +263,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
     lngh = logf(lngh + beta_tau) - logf(-2 * alpha_tau);
     const float gh = expf(lngh);
     const float eS = gh / (1 + gh);
-    if (fabs(1 - eS) > 1e-14) {
+    if (fabsf(1 - eS) > 1e-14) {
       const float t = 1 + gh * (1 - R2), t2 = 1 + gh;
       const float lngamma =
           -logf(gh * u * (1 - R2) / (t * t)) - gh * w / (t2 * t2);
@@ -273,7 +273,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
         ms += ac[ell - 1] * ac[ell - 1] * ell * ell +
               as[ell - 1] * as[ell - 1] * ell * ell;
       const float lnH =
-          logf(fabs(-gh * N_FFT_GRID * (N_FFT_GRID * N_FFT_GRID - 1) /
+          logf(fabsf(-gh * N_FFT_GRID * (N_FFT_GRID * N_FFT_GRID - 1) /
                     (r * r * 6 * (1 + gh) * sigma2))) +
           logf(ms);
       const float lnBFg =

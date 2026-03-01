@@ -12,7 +12,7 @@ enum { N_FFT_GRID = 1024 };
 enum { MIDI_CAP = 16 };
 
 /// Max number of harmonics.
-enum { MAX_MODEL_ORDER = 4 };
+enum { MAX_MODEL_ORDER = 3 };
 
 /// Midpoint.
 enum { MP = (N_FFT_GRID >> 1) + 1 };
