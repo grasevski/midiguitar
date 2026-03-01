@@ -333,7 +333,7 @@ uint8_t midiguitar(struct midiguitar *midiguitar, const float input[N_FFT_GRID],
   float rms;
   arm_rms_f32(input, N_FFT_GRID, &rms);
   const uint8_t velocity = fminf(128 * rms, 127);
-  const float f = 48000 * fastf0nls(input) / (2 * M_PI);
+  const float f = velocity ? 48000 * fastf0nls(input) / (2 * M_PI) : 0;
   const uint32_t n =
       f <= 0 || f > 13289.75 ? 0 : NUM_BENDS * (69 + 12 * log2f(f / 440) + 0.5);
   const uint8_t note = n >> LOG_NUM_BENDS;

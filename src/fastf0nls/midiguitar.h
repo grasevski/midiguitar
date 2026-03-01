@@ -3,16 +3,16 @@
 #include <stdint.h>
 
 /// FFT static dispatch based on size.
-#define FFT_INIT arm_rfft_fast_init_1024_f32
+#define FFT_INIT arm_rfft_fast_init_4096_f32
 
 /// FFT size.
-enum { N_FFT_GRID = 1024 };
+enum { N_FFT_GRID = 4096 };
 
 /// Midi TX buffer size.
 enum { MIDI_CAP = 16 };
 
 /// Max number of harmonics.
-enum { MAX_MODEL_ORDER = 3 };
+enum { MAX_MODEL_ORDER = 4 };
 
 /// Midpoint.
 enum { MP = (N_FFT_GRID >> 1) + 1 };
