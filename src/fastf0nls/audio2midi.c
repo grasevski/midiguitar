@@ -5,8 +5,8 @@
 #include "midiguitar.h"
 
 /// Converts the signed pcm value to a float.
-static void parse(const int16_t inbuf[N_FFT_GRID], float input[N_FFT_GRID]) {
-  for (uint16_t i = 0; i < N_FFT_GRID; ++i) input[i] = inbuf[i] / 32768.0;
+static void parse(const int16_t inbuf[SAMPLES], float input[SAMPLES]) {
+  for (uint16_t i = 0; i < SAMPLES; ++i) input[i] = inbuf[i] / 32768.0;
 }
 
 /// Writes midi to the given buffer along with a timestamp.
@@ -45,8 +45,8 @@ int main() {
   int16_t n;
   int32_t k = 0, len = 0, dt = 0;
   uint8_t output[MIDI_CAP];
-  int16_t inbuf[N_FFT_GRID];
-  float input[N_FFT_GRID];
+  int16_t inbuf[SAMPLES];
+  float input[SAMPLES];
   for (;;) {
     n = read(0, (uint8_t *)inbuf + k, sizeof(inbuf) - k);
     if (n <= 0) {

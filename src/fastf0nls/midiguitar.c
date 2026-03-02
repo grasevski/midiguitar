@@ -35,14 +35,15 @@ static void update_ls_sol(int order, int nPitches, int nPitchesOld, bool add,
 }
 
 /// Calculates omega for each model order.
-static void compute(const float x[N_FFT_GRID],
+static void compute(const float x[SAMPLES],
                     float omega_0h[MAX_MODEL_ORDER]) {
   float dftData[MP << 1];
   {
     arm_rfft_fast_instance_f32 fft;
     FFT_INIT(&fft);
     float p[N_FFT_GRID], p1[N_FFT_GRID + 2];
-    memcpy(p, x, sizeof(p));
+    memcpy(p, x, SAMPLES * sizeof(float));
+    bzero(p + SAMPLES, (N_FFT_GRID - SAMPLES) * sizeof(float));
     arm_rfft_fast_f32(&fft, p, p1, 0);
     arm_cmplx_mult_real_f32(FFT_SHIFT_VECTOR, p1, dftData, MP);
   }
@@ -188,21 +189,21 @@ static void thp(int n, const float t[2 * (n + 2)], const float h[2 * n],
 }
 
 /// Compute the objective at omega, for data x, with given order.
-static float compute_obj(float omega, const float x[N_FFT_GRID], int order,
+static float compute_obj(float omega, const float x[SAMPLES], int order,
                          float ac[order], float as[order]) {
   float t[(order + 1) << 1];
-  t[0] = N_FFT_GRID;
+  t[0] = SAMPLES;
   for (int i = 1; i <= 2 * order + 1; ++i)
-    t[i] = 0.5 * arm_sin_f32(0.5 * omega * N_FFT_GRID * i) /
+    t[i] = 0.5 * arm_sin_f32(0.5 * omega * SAMPLES * i) /
            arm_sin_f32(0.5 * omega * i);
   float bc[order], bs[order];
   arm_fill_f32(0, bc, order);
   arm_fill_f32(0, bs, order);
   const float cosOmega = arm_cos_f32(omega);
   const float sinOmega = arm_sin_f32(omega);
-  const float tmp = omega * -0.5 * (N_FFT_GRID - 1);
+  const float tmp = omega * -0.5 * (SAMPLES - 1);
   float c = arm_cos_f32(tmp), s = arm_sin_f32(tmp);
-  for (int i = 0; i < N_FFT_GRID; ++i) {
+  for (int i = 0; i < SAMPLES; ++i) {
     bc[0] += c * x[i];
     bs[0] += s * x[i];
     if (order > 1) {
@@ -241,13 +242,13 @@ static float compute_obj(float omega, const float x[N_FFT_GRID], int order,
 
 /// Perform model order selection on the data x.
 static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
-                                 const float x[N_FFT_GRID]) {
+                                 const float x[SAMPLES]) {
   enum { r = 2 };
   enum { rho = 1 };
   enum { v = 1 };
-  const float delta = r * 1.5, u = ((float)N_FFT_GRID) / r;
+  const float delta = r * 1.5, u = ((float)SAMPLES) / r;
   float energy, lnBF[MAX_MODEL_ORDER + 1];
-  arm_power_f32(x, N_FFT_GRID, &energy);
+  arm_power_f32(x, SAMPLES, &energy);
   uint32_t order = 0;
   lnBF[0] = 0;
   for (int k = 1; k <= MAX_MODEL_ORDER; ++k) {
@@ -255,7 +256,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
     float ac[k], as[k];
     const float Jomega = compute_obj(omega_0h[k - 1], x, k, ac, as);
     const float R2 = Jomega / energy;
-    const float w = (N_FFT_GRID - 2 * k - delta) / r;
+    const float w = (SAMPLES - 2 * k - delta) / r;
     const float alpha_tau = (1 - R2) * (v + w - u);
     const float beta_tau = (u - v) * R2 + 2 * v + w - u;
     float lngh;
@@ -267,18 +268,18 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
       const float t = 1 + gh * (1 - R2), t2 = 1 + gh;
       const float lngamma =
           -logf(gh * u * (1 - R2) / (t * t)) - gh * w / (t2 * t2);
-      const float sigma2 = energy / N_FFT_GRID - eS * Jomega / N_FFT_GRID;
+      const float sigma2 = (energy - eS * Jomega) / SAMPLES;
       float ms = 0;
       for (int ell = 1; ell <= k; ++ell)
         ms += ac[ell - 1] * ac[ell - 1] * ell * ell +
               as[ell - 1] * as[ell - 1] * ell * ell;
       const float lnH =
-          logf(fabsf(-gh * N_FFT_GRID * (N_FFT_GRID * N_FFT_GRID - 1) /
+          logf(fabsf(-gh * SAMPLES * (SAMPLES * SAMPLES - 1) /
                     (r * r * 6 * (1 + gh) * sigma2))) +
           logf(ms);
       const float lnBFg =
           logf(1 + gh) * -k +
-          logf((energy / N_FFT_GRID) / sigma2) * (((float)N_FFT_GRID) / r);
+          logf((energy / SAMPLES) / sigma2) * (((float)SAMPLES) / r);
       lnBF[k] = lnBFg + logf(gh * (delta - r)) - logf(r) -
                 logf(1 + gh) * (delta / r) - lnW +
                 logf(2 * M_PI) * ((rho + 1) * 0.5) + lngamma / 2 - lnH / 2;
@@ -292,7 +293,7 @@ static int model_order_selection(const float omega_0h[MAX_MODEL_ORDER],
 }
 
 /// Calculates the fundamental frequency for the given audio slice.
-static float fastf0nls(const float x[N_FFT_GRID]) {
+static float fastf0nls(const float x[SAMPLES]) {
   float omega_0h[MAX_MODEL_ORDER];
   compute(x, omega_0h);
   const int order = model_order_selection(omega_0h, x);
@@ -326,12 +327,12 @@ static float fastf0nls(const float x[N_FFT_GRID]) {
   return 0.5 * (omega_a + omega_b);
 }
 
-uint8_t midiguitar(struct midiguitar *midiguitar, const float input[N_FFT_GRID],
+uint8_t midiguitar(struct midiguitar *midiguitar, const float input[SAMPLES],
                    uint8_t output[MIDI_CAP]) {
   enum { LOG_NUM_BENDS = 12 };
   enum { NUM_BENDS = 1 << LOG_NUM_BENDS };
   float rms;
-  arm_rms_f32(input, N_FFT_GRID, &rms);
+  arm_rms_f32(input, SAMPLES, &rms);
   const uint8_t velocity = fminf(128 * rms, 127);
   const float f = velocity ? 48000 * fastf0nls(input) / (2 * M_PI) : 0;
   const uint32_t n =

@@ -112,12 +112,12 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   HAL_OPAMP_Start(&hopamp1);
-  enum { N_INPUT = N_FFT_GRID << 1 };
+  enum { N_INPUT = SAMPLES << 1 };
   __attribute__((section(".dma"))) static uint16_t inbuf[N_INPUT];
   bzero(inbuf, sizeof(inbuf));
   struct midiguitar mg = {};
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)inbuf, N_FFT_GRID << 1);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)inbuf, N_INPUT);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,12 +125,12 @@ int main(void)
   while (1)
   {
     const uint16_t k = __HAL_DMA_GET_COUNTER(hadc1.DMA_Handle);
-    float input[N_FFT_GRID];
+    float input[SAMPLES];
     int32_t s = 0;
-    for (uint16_t i = 0; i < N_FFT_GRID; ++i) s += inbuf[(N_INPUT - k + i + N_FFT_GRID) & (N_INPUT - 1)];
-    s /= N_FFT_GRID;
-    for (uint16_t i = 0; i < N_FFT_GRID; ++i)
-      input[i] = (inbuf[(N_INPUT - k + i + N_FFT_GRID) & (N_INPUT - 1)] - s) / 32768.0;
+    for (uint16_t i = 0; i < SAMPLES; ++i) s += inbuf[(N_INPUT - k + i + SAMPLES) & (N_INPUT - 1)];
+    s /= SAMPLES;
+    for (uint16_t i = 0; i < SAMPLES; ++i)
+      input[i] = (inbuf[(N_INPUT - k + i + SAMPLES) & (N_INPUT - 1)] - s) / 32768.0;
     __attribute__((section(".bdma"))) static uint8_t output[MIDI_CAP];
     const int t0 = HAL_GetTick();
     const int n = midiguitar(&mg, input, output);

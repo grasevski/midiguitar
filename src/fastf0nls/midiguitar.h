@@ -8,6 +8,9 @@
 /// FFT size.
 enum { N_FFT_GRID = 4096 };
 
+/// Sample chunk size.
+enum { SAMPLES = 512 };
+
 /// Midi TX buffer size.
 enum { MIDI_CAP = 16 };
 
@@ -30,5 +33,5 @@ struct midiguitar {
 };
 
 /// Converts audio to midi.
-uint8_t midiguitar(struct midiguitar *midiguitar, const float input[N_FFT_GRID],
+uint8_t midiguitar(struct midiguitar *midiguitar, const float input[SAMPLES],
                    uint8_t output[MIDI_CAP]);

@@ -188,7 +188,7 @@ int main() {
   printf("#pragma once\n#include \"midiguitar.h\"\n\n");
   printf("const float FFT_SHIFT_VECTOR[MP << 1] = {\n  ");
   for (uint16_t i = 0; i < MP; ++i) {
-    const float v = (M_PI * (N_FFT_GRID - 1.0) / N_FFT_GRID) * i;
+    const float v = (M_PI * (SAMPLES - 1.0) / N_FFT_GRID) * i;
     printf("%f, %f,", cosf(v), sinf(v));
     if (i + 1 < MP) printf(" ");
   }
@@ -197,7 +197,7 @@ int main() {
   uint16_t maxFftIndex = MAX_FFT_INDEX;
   uint16_t nPitches = maxFftIndex - MIN_FFT_INDEX + 1;
   for (uint16_t i = 0; i < nPitches; ++i) {
-    ccVectors[0][i] = 0.5 * N_FFT_GRID;
+    ccVectors[0][i] = 0.5 * SAMPLES;
   }
   ccVectorsLen[0] = nPitches;
   for (uint8_t k = 1; k < (MAX_MODEL_ORDER + 1) << 1; ++k) {
@@ -208,7 +208,7 @@ int main() {
     }
     for (uint16_t i = 0; i < nPitches; ++i) {
       const float t = M_PI * k * (i + MIN_FFT_INDEX) / N_FFT_GRID;
-      ccVectors[k][i] = 0.5 * sinf(t * N_FFT_GRID) / sinf(t);
+      ccVectors[k][i] = 0.5 * sinf(t * SAMPLES) / sinf(t);
     }
     ccVectorsLen[k] = nPitches;
   }
