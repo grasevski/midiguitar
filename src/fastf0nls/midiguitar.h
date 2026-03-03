@@ -9,7 +9,7 @@
 enum { N_FFT_GRID = 4096 };
 
 /// Sample chunk size.
-enum { SAMPLES = 512 };
+enum { SAMPLES = 1024 };
 
 /// Midi TX buffer size.
 enum { MIDI_CAP = 16 };
